@@ -1,0 +1,2 @@
+# MovieShopCore
+MovieShop .net Core
