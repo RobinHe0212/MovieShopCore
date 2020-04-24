@@ -9,7 +9,7 @@ namespace MovieShop.Infrastructure.Data
 {
    public class MovieShopDbContext: DbContext
     {
-        public MovieShopDbContext(DbContextOptions<MovieShopDbContext> options) 
+        public MovieShopDbContext(DbContextOptions<MovieShopDbContext> options) : base(options)
         {
         }
 
