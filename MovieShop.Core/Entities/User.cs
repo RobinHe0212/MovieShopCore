@@ -21,5 +21,6 @@ namespace MovieShop.Core.Entities
         public int? AccessFailedCount { get; set; }
 
         public ICollection<UserRole> RolesOfUser { get; set; }
+        public ICollection<Purchase> Purchases { get; set; }
     }
 }

@@ -6,7 +6,7 @@ C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\obj\Debug\netst
 C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\bin\Debug\netstandard2.0\MovieShop.Infrastructure.pdb
 C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\bin\Debug\netstandard2.0\MovieShop.Core.dll
 C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\bin\Debug\netstandard2.0\MovieShop.Core.pdb
-C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\obj\Debug\netstandard2.0\MovieShop.Infrastructure.csproj.CoreCompileInputs.cache
 C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\obj\Debug\netstandard2.0\MovieShop.Infrastructure.csproj.CopyComplete
 C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\obj\Debug\netstandard2.0\MovieShop.Infrastructure.dll
 C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\obj\Debug\netstandard2.0\MovieShop.Infrastructure.pdb
+C:\Users\RobinHe\source\repos\MovieShop\MovieShop.Infrastructure\obj\Debug\netstandard2.0\MovieShop.Infrastructure.csproj.CoreCompileInputs.cache

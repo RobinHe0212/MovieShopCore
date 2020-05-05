@@ -11,6 +11,8 @@ namespace MovieShop.Core.RepositoryInterfaces
         Task<IEnumerable<Movie>> GetTopRevenueMovie();
 
         Task<IEnumerable<Movie>> GetMoviesByCast(int castId);
+
+        Task<IEnumerable<Movie>> GetMoviesByGenre(int genreId);
        
     }
 }

@@ -12,6 +12,7 @@ namespace MovieShop.Infrastructure.Data
         public MovieShopDbContext(DbContextOptions<MovieShopDbContext> options) : base(options)
         {
         }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Genre> Genres { get; set; }
@@ -23,7 +24,7 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<MovieCast> MovieCasts { get; set; }
 
         public DbSet<Crew> Crew { get; set; }
-
+        public DbSet<Purchase> Purchases { get; set; }
         public DbSet<MovieCrew> MovieCrews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +40,17 @@ namespace MovieShop.Infrastructure.Data
             modelBuilder.Entity<UserRole>(ConfigureUserRoles);
             modelBuilder.Entity<MovieCrew>(ConfigureMovieCrew);
             modelBuilder.Entity<Crew>(ConfigureCrew);
+            modelBuilder.Entity<Purchase>(ConfigurePurchase);
+
+        }
+
+        private void ConfigurePurchase(EntityTypeBuilder<Purchase> builder)
+        {
+            builder.ToTable("Purchase");
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Id).ValueGeneratedOnAdd();
+            builder.Property(p => p.PurchaseNumber).ValueGeneratedOnAdd();
+            builder.HasIndex(p => new { p.UserId, p.MovieId }).IsUnique();
         }
 
         private void ConfigureCrew(EntityTypeBuilder<Crew> builder)

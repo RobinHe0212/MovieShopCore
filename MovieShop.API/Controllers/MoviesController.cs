@@ -41,5 +41,13 @@ namespace MovieShop.API.Controllers
             var movies = await _movieService.GetMoviesByCast(castId);
             return Ok(movies);
         }
+
+        [HttpGet]
+        [Route("GenreId/{genreId}")]
+        public async Task<IActionResult> GetMoviesByGenre(int genreId)
+        {
+            var movies = await _movieService.GetMovieByGenre(genreId);
+            return Ok(movies);
+        }
     }
 }

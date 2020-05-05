@@ -23,12 +23,38 @@ namespace MovieShop.Infrastructure.Repositories
             return movies;
         }
 
+        public async Task<IEnumerable<Movie>> GetMoviesByGenre(int genreId)
+        {
+            var movies = await _dbContext.MovieGenres.Where(mg => mg.GenreId == genreId).Include(g => g.Movie).Select(m => m.Movie).ToListAsync();
+            return movies;
+        }
+
+
+
         public async Task<IEnumerable<Movie>> GetTopRevenueMovie()
         {
-            var movie = await _dbContext.Movies.OrderByDescending(m => m.Revenue).Take(50).ToListAsync();
+            var movie = await _dbContext.Movies.OrderByDescending(m => m.Revenue).Take(20).ToListAsync();
             return movie;
         }
 
-        
+        public override async Task<Movie> GetByIdAsync(int id)
+
+        {
+
+            var movie = await _dbContext.Movies
+
+                                        .Include(m => m.CastsOfMovie).ThenInclude(m => m.Cast).Include(m => m.GenresOfMovie)
+
+                                        .ThenInclude(m => m.Genre)
+
+                                        .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (movie == null) return null;
+
+
+
+            return movie;
+
+        }
     }
 }
