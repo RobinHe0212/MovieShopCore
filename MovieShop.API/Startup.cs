@@ -46,6 +46,7 @@ namespace MovieShop.API
             services.AddScoped<IAsyncRepository<Cast>, EfRepository<Cast>>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPurchaseRepository, PurchasedRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             //register service
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IMovieService, MovieService>();

@@ -15,12 +15,14 @@ namespace MovieShop.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly ICryptoService _cryptoService;
         private readonly IPurchaseRepository _purchaseRepository;
+        private readonly IRoleRepository _roleRepository;
 
-        public UserService(IUserRepository userRepository,ICryptoService cryptoService, IPurchaseRepository purchaseRepository)
+        public UserService(IUserRepository userRepository,ICryptoService cryptoService, IPurchaseRepository purchaseRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _cryptoService = cryptoService;
             _purchaseRepository = purchaseRepository;
+            _roleRepository = roleRepository;
         }
         public async Task<UserRegisterResponseModel> CreateUser(UserRegisterRequestModel reqeust)
         {
@@ -57,6 +59,27 @@ namespace MovieShop.Infrastructure.Services
                 p=>p.Movie
                 );
             return GetAllPurchasedMovies(movies,id);
+        }
+
+        //get role for user
+        public async Task<UserRoleRespnseModel> GetRolesForUser(int id)
+        {
+            var roles = await _roleRepository.ListAllWithIncludesAsync(r => r.UserId == id, r => r.Role);
+            return GetAllRolesForUser(roles, id);
+        }
+
+        private UserRoleRespnseModel GetAllRolesForUser(IEnumerable<UserRole> users, int id)
+        {
+            var roles = new List<RoleResponseModel>();
+            foreach (var user in users)
+            {
+                roles.Add(new RoleResponseModel
+                {
+                    RoleId = user.RoleId,
+                    Name = user.Role.Name
+                });
+            }
+            return new UserRoleRespnseModel { UserId = id, Roles = roles };
         }
 
         private PurchaseResponseModel GetAllPurchasedMovies(IEnumerable<Purchase> purchases,int userId)

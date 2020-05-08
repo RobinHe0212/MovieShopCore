@@ -15,5 +15,6 @@ namespace MovieShop.Core.ServiceInterfaces
         Task<User> GetUserByEmail(string email);
 
         Task<PurchaseResponseModel> GetAllPurchasedMoviesByUser(int id);
+        Task<UserRoleRespnseModel> GetRolesForUser(int id);
     }
 }

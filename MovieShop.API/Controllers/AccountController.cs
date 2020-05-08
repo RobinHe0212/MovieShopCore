@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -10,7 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MovieShop.Core.ApiModels.Request;
+using MovieShop.Core.ApiModels.Response;
 using MovieShop.Core.Entities;
+using MovieShop.Core.Helpers;
 using MovieShop.Core.ServiceInterfaces;
 
 namespace MovieShop.API.Controllers
@@ -47,15 +50,30 @@ namespace MovieShop.API.Controllers
             return Ok(new {token = GenerateJWT(loginUser) });
         }
 
-        private string GenerateJWT(User user)
+       
+
+        private async Task<string> GenerateJWT(User user)
         {
+            var userRoleModel = await _userService.GetRolesForUser(user.Id);
+            var userRoles = userRoleModel.Roles;
+            
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+
+                
             };
+            foreach (var role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role,role.Name));
+            }
+
+            
+            
             var identityClaims = new ClaimsIdentity();
             identityClaims.AddClaims(claims);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["TokenSettings:PrivateKey"]));
@@ -74,6 +92,8 @@ namespace MovieShop.API.Controllers
             var encodedJwt = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(encodedJwt);
         }
+
+        
 
         public async Task<IActionResult> EmailExists([FromQuery] string email)
         {
