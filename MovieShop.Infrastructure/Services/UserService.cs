@@ -1,10 +1,12 @@
-﻿using MovieShop.Core.ApiModels.Request;
+﻿using AutoMapper;
+using MovieShop.Core.ApiModels.Request;
 using MovieShop.Core.ApiModels.Response;
 using MovieShop.Core.Entities;
 using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Core.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,13 +18,19 @@ namespace MovieShop.Infrastructure.Services
         private readonly ICryptoService _cryptoService;
         private readonly IPurchaseRepository _purchaseRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IAsyncRepository<Favourite> _favRepository;
+        private readonly IAsyncRepository<Review> _reviewRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository,ICryptoService cryptoService, IPurchaseRepository purchaseRepository, IRoleRepository roleRepository)
+        public UserService(IUserRepository userRepository,IMapper mapper,IAsyncRepository<Review> reviewRepository,IAsyncRepository<Favourite> favRepository,ICryptoService cryptoService, IPurchaseRepository purchaseRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _cryptoService = cryptoService;
             _purchaseRepository = purchaseRepository;
             _roleRepository = roleRepository;
+            _favRepository = favRepository;
+            _reviewRepository = reviewRepository;
+            _mapper = mapper;
         }
         public async Task<UserRegisterResponseModel> CreateUser(UserRegisterRequestModel reqeust)
         {
@@ -118,6 +126,63 @@ namespace MovieShop.Infrastructure.Services
             {
                 throw new Exception("wrong password or email");
             }
+        }
+
+        //add Fav
+        public async Task AddFavourite(FavouriteRequestModel fav)
+        {
+            //check if fav already exits
+            if(await FavExist(fav.UserId, fav.MovieId))
+            {
+                throw new Exception("Movie already exists");
+            }
+            var favourite = _mapper.Map<Favourite>(fav);
+            await _favRepository.AddAsync(favourite);
+        }
+
+        public async Task<bool> FavExist(int userId, int movieId)
+        {
+            return await _favRepository.GetExistsAsync(f => f.UserId == userId && f.MovieId == movieId);
+        }
+
+        public async Task RemoveFavorite(FavouriteRequestModel fav)
+        {
+            var dbFav = await _favRepository.ListAsync(f => f.UserId == fav.UserId && f.MovieId == fav.MovieId);
+            await _favRepository.DeleteAsync(dbFav.First());
+        }
+
+        public async Task<FavouriteResponseModel> GetAllFavouriteForUser(int id)
+        {
+            var favouriteMovies = await _favRepository.ListAllWithIncludesAsync(
+                 f=>f.UserId==id,
+                 p=>p.Movie
+                );
+            return _mapper.Map<FavouriteResponseModel>(favouriteMovies);
+        }
+
+        // review 
+        public async Task AddReview(ReviewRequestModel review)
+        {
+            var reviewReq = _mapper.Map<Review>(review);
+            await _reviewRepository.AddAsync(reviewReq);
+        }
+
+        public async Task UpdateReview(ReviewRequestModel review)
+        {
+            var reviewReq = _mapper.Map<Review>(review);
+            await _reviewRepository.UpdateAsync(reviewReq);
+        }
+
+        public async Task DeleteReview(int userId,int movieId)
+        {
+            var review = await _reviewRepository.ListAsync(r => r.UserId == userId && r.MovieId == movieId);
+            await _reviewRepository.DeleteAsync(review.First());
+        }
+
+        public async Task<ReviewResponseModel> GetAllReviewsByUser(int userId)
+        {
+            var reviews = await _reviewRepository.ListAllWithIncludesAsync(r => r.UserId == userId, r => r.Movie);
+            return _mapper.Map<ReviewResponseModel>(reviews);
         }
     }
 }

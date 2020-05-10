@@ -49,5 +49,7 @@ namespace MovieShop.Core.Entities
         public ICollection<MovieCast> CastsOfMovie { get; set; }
 
         public ICollection<MovieCrew> CrewsOfMovie { get; set; }
+
+        public ICollection<Review> Reviews { get; set; }
     }
 }

@@ -27,6 +27,10 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<MovieCrew> MovieCrews { get; set; }
 
+        public DbSet<Favourite> Favourites { get; set; }
+
+        public DbSet<Review> Reviews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
@@ -41,7 +45,25 @@ namespace MovieShop.Infrastructure.Data
             modelBuilder.Entity<MovieCrew>(ConfigureMovieCrew);
             modelBuilder.Entity<Crew>(ConfigureCrew);
             modelBuilder.Entity<Purchase>(ConfigurePurchase);
+            modelBuilder.Entity<Favourite>(ConfigureFavourite);
+            modelBuilder.Entity<Review>(ConfigureReview);
 
+        }
+
+        private void ConfigureReview(EntityTypeBuilder<Review> builder)
+        {
+            builder.ToTable("Review");
+            builder.HasKey(r => new { r.UserId, r.MovieId });
+            builder.Property(r => r.ReviewText).HasMaxLength(20000);
+            builder.Property(r=>r.Rating).HasColumnType("decimal(3,2)");
+        }
+
+        private void ConfigureFavourite(EntityTypeBuilder<Favourite> builder)
+        {
+            builder.ToTable("Favourite");
+            builder.HasKey(f => f.Id);
+            builder.Property(f => f.Id).ValueGeneratedOnAdd();
+            builder.HasIndex(f => new { f.MovieId, f.UserId }).IsUnique();
         }
 
         private void ConfigurePurchase(EntityTypeBuilder<Purchase> builder)

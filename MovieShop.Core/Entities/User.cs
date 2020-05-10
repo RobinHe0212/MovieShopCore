@@ -22,5 +22,8 @@ namespace MovieShop.Core.Entities
 
         public ICollection<UserRole> RolesOfUser { get; set; }
         public ICollection<Purchase> Purchases { get; set; }
+
+        public ICollection<Favourite> Favourites { get; set; }
+        public ICollection<Review> Reviews { get; set; }
     }
 }

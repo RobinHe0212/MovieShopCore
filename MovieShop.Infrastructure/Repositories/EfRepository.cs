@@ -45,9 +45,9 @@ namespace MovieShop.Infrastructure.Repositories
             return await _dbContext.Set<T>().CountAsync();
         }
 
-        public Task<bool> GetExistsAsync(Expression<Func<T, bool>> filter = null)
+        public virtual async Task<bool> GetExistsAsync(Expression<Func<T, bool>> filter = null)
         {
-            throw new NotImplementedException();
+            return filter != null && await _dbContext.Set<T>().Where(filter).AnyAsync();
         }
 
         public async Task<PaginatedList<T>> GetPagedData(int pageIndex, int pageSize, Func<IQueryable<T>, IOrderedQueryable<T>> orderedQuery = null, Expression<Func<T, bool>> filter = null)
@@ -71,14 +71,16 @@ namespace MovieShop.Infrastructure.Repositories
             return await query.Where(@where).ToListAsync();
         }
 
-        public Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> filter)
+        public async Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> filter)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<T>().Where(filter).ToListAsync();
         }
 
-        public Task<T> UpdateAsync(T entity)
+        public virtual async Task<T> UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }

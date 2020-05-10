@@ -16,5 +16,18 @@ namespace MovieShop.Core.ServiceInterfaces
 
         Task<PurchaseResponseModel> GetAllPurchasedMoviesByUser(int id);
         Task<UserRoleRespnseModel> GetRolesForUser(int id);
+
+        Task<FavouriteResponseModel> GetAllFavouriteForUser(int id);
+
+        Task RemoveFavorite(FavouriteRequestModel fav);
+
+        Task AddFavourite(FavouriteRequestModel fav);
+
+        Task<ReviewResponseModel> GetAllReviewsByUser(int userId);
+
+        Task DeleteReview(int userId, int movieId);
+
+        Task UpdateReview(ReviewRequestModel review);
+        Task AddReview(ReviewRequestModel review);
     }
 }
