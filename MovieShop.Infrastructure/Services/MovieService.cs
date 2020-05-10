@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using MovieShop.Core.Helpers;
+using System.Linq.Expressions;
+using System.Linq;
 
 namespace MovieShop.Infrastructure.Services
 {
@@ -42,6 +45,27 @@ namespace MovieShop.Infrastructure.Services
         {
             var movies = await _movieRepository.GetMoviesByCast(castId);
             return movies;
+        }
+
+        public async Task<PageResultSet<MovieResponseModel>> GetMoviesByPagination(int pageSize = 20, int page = 0, string title = "")
+        {
+            Expression<Func<Movie, bool>> filterExpression = null;
+            if (!string.IsNullOrEmpty(title))
+            {
+                filterExpression = movie => title != null && movie.Title.Contains(title);
+            }
+            var pagedMovies = await _movieRepository.GetPagedData(page, pageSize, movie => movie.OrderBy(m => m.Title), filterExpression);
+            var pagesResponseModel = new List<MovieResponseModel>();
+            foreach (var movie in pagedMovies)
+            {
+                pagesResponseModel.Add(new MovieResponseModel {
+                   Id = movie.Id,
+                   PosterUrl = movie.PosterUrl,
+                   ReleaseDate = movie.ReleaseDate.Value,
+                   Title = title
+                });
+            }
+            return new PageResultSet<MovieResponseModel>(pagesResponseModel, page, pageSize, pagesResponseModel.Count());
         }
     }
 }

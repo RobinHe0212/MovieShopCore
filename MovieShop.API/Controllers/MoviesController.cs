@@ -20,9 +20,9 @@ namespace MovieShop.API.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetTopGrossingMovies()
+        public async Task<IActionResult> GetTopGrossingMovies([FromQuery] int pageSize = 20, [FromQuery]int pageIndex=1, [FromQuery] string title = "")
         {
-            var movies = await _movieService.GetTopGrossingMovies();
+            var movies = await _movieService.GetMoviesByPagination(pageSize, pageIndex, title);
             return Ok(movies);
         }
 

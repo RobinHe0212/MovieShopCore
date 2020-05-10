@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MovieShop.Core.ServiceInterfaces;
 
 namespace MovieShop.API.Controllers
@@ -23,6 +24,10 @@ namespace MovieShop.API.Controllers
         [Route("")]
         public async Task<IActionResult> GetAllGenres()
         {
+            //test exception
+            //int a = 7;
+            //int b = 0;
+            //int c = a / b;
             var genres = await _genreService.GetAllGenres();
             return Ok(genres);
         }

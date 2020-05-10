@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MovieShop.Core.Helpers;
 using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Infrastructure.Data;
 using System;
@@ -47,6 +48,12 @@ namespace MovieShop.Infrastructure.Repositories
         public Task<bool> GetExistsAsync(Expression<Func<T, bool>> filter = null)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<PaginatedList<T>> GetPagedData(int pageIndex, int pageSize, Func<IQueryable<T>, IOrderedQueryable<T>> orderedQuery = null, Expression<Func<T, bool>> filter = null)
+        {
+            var pageList = await PaginatedList<T>.GetPaged(_dbContext.Set<T>(), pageIndex, pageSize, orderedQuery, filter);
+            return pageList;
         }
 
         public virtual async Task<IEnumerable<T>> ListAllAsync()
